@@ -38,5 +38,5 @@ RUN composer install --optimize-autoloader --no-dev --no-interaction
 # Set correct permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Start command: migrate first (creates cache table), then serve via php -S (avoids Laravel ServeCommand port type bug)
-CMD ["sh", "-c", "php artisan migrate --force && php -S 0.0.0.0:${PORT:-8000} -t public /app/server.php"]
+# Start command: optimize framework, migrate, then serve via php -S
+CMD ["sh", "-c", "php artisan optimize:clear && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force && php -S 0.0.0.0:${PORT:-8000} -t public /app/server.php"]
