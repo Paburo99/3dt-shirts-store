@@ -2,12 +2,12 @@
 NIXPACKS_PHP_EXTENSIONS = "intl,zip,pdo_pgsql"
 
 [phases.setup]
-nixPkgs = ['nodejs_20', 'npm-9_x']
+nixPkgs = ['php82', 'php82Extensions.pgsql', 'php82Extensions.pdo_pgsql', 'php82Extensions.intl', 'php82Extensions.zip', 'nodejs_20', 'npm-9_x']
 aptPkgs = ['libicu-dev', 'libzip-dev', 'libpq-dev']
 
 [phases.install]
 cmds = [
-    'composer install --no-interaction --prefer-dist --optimize-autoloader',
+    'composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-req=ext-intl --ignore-platform-req=ext-zip',
     'npm ci',
 ]
 
