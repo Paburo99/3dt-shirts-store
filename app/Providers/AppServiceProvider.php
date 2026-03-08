@@ -28,8 +28,8 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
 
         // 2. Force HTTPS when using tunnels or in production
-        // if (str_contains(env('APP_URL'), 'https://')) {
-        //     URL::forceScheme('https');
-        // }
+        if (str_contains(env('APP_URL'), 'https://')) {
+            URL::forceScheme('https'); 
+        }
     }
 }
