@@ -2,16 +2,14 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Center } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import HoodieModel from './HoodieModel';
 import CrewneckModel from './CrewneckModel';
 import CargoModel from './CargoModel';
 
 export default function ProductCanvas({ modelType }) {
 
-    // Determine which model to render based on the prop
     const renderModel = () => {
-        // You might need to adjust these strings based on exactly what 
-        // string your database saves for the product name/type
         switch(modelType?.toLowerCase()) {
             case 'classic-3d-crewneck':
                 return <CrewneckModel />;
@@ -30,46 +28,78 @@ export default function ProductCanvas({ modelType }) {
             shadows 
             camera={{ position: [0, 0, 10], fov: 45 }}
             className="w-full h-full cursor-grab active:cursor-grabbing"
+            gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         >
-            {/* Soft global lighting */}
-            <ambientLight intensity={0.5} />
+            {/* Improved 3-point lighting */}
+            <ambientLight intensity={0.4} />
             
-            {/* Directional light to cast shadows */}
+            {/* Key light */}
             <spotLight 
                 position={[10, 10, 10]} 
                 angle={0.15} 
                 penumbra={1} 
-                intensity={1} 
-                castShadow 
+                intensity={1.2} 
+                castShadow
+                shadow-mapSize={[1024, 1024]}
+            />
+
+            {/* Fill light */}
+            <spotLight
+                position={[-8, 5, -5]}
+                angle={0.3}
+                penumbra={1}
+                intensity={0.4}
+                color="#f0f0ff"
+            />
+
+            {/* Rim light */}
+            <pointLight
+                position={[0, 5, -10]}
+                intensity={0.3}
+                color="#e0e0ff"
             />
 
             {/* HDR Environment lighting for realistic fabric reflections */}
             <Environment preset="city" />
 
             <Suspense fallback={null}>
-                {/* Center automatically centers the Blender model regardless of its origin */}
                 <Center>
                     {renderModel()}
                 </Center>
                 
-                {/* A beautiful soft shadow rendered strictly on the floor beneath the model */}
+                {/* Soft floor shadow */}
                 <ContactShadows 
                     position={[0, -1.5, 0]} 
-                    opacity={0.5} 
+                    opacity={0.6} 
                     scale={10} 
-                    blur={2} 
+                    blur={2.5} 
                     far={4} 
                 />
             </Suspense>
+
+            {/* Post-processing effects (v2 compatible with fiber v8) */}
+            <EffectComposer>
+                <Bloom
+                    intensity={0.15}
+                    luminanceThreshold={0.9}
+                    luminanceSmoothing={0.4}
+                    mipmapBlur
+                />
+                <Vignette
+                    offset={0.3}
+                    darkness={0.4}
+                    eskil={false}
+                />
+            </EffectComposer>
 
             {/* User Interaction Controls */}
             <OrbitControls 
                 enablePan={false}
                 enableZoom={true}
-                minPolarAngle={Math.PI / 4} // Prevent looking directly from bottom
-                maxPolarAngle={Math.PI / 1.5} // Prevent looking directly from top
-                minDistance={5} // Zoom in limit
-                maxDistance={15} // Zoom out limit
+                minPolarAngle={Math.PI / 4}
+                maxPolarAngle={Math.PI / 1.5}
+                minDistance={5}
+                maxDistance={15}
             />
         </Canvas>
     );

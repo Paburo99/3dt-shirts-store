@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Order;
 use App\Enums\OrderStatus;
-use Illuminate\Support\Facades\Log;
+use App\Models\Order;
+use App\Notifications\OrderConfirmed;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class WompiWebhookController extends Controller
 {
@@ -37,6 +39,10 @@ class WompiWebhookController extends Controller
                 'status' => OrderStatus::PROCESSING,
                 'wompi_transaction_id' => $transactionId,
             ]);
+
+            Notification::route('mail', $order->customer_email)
+                ->notify(new OrderConfirmed($order));
+
             Log::info("Order {$reference} paid successfully.");
         } 
         elseif (in_array($status,['DECLINED', 'ERROR', 'VOIDED'])) {
@@ -61,7 +67,7 @@ class WompiWebhookController extends Controller
         $signatureProperties = Arr::get($payload, 'signature.properties',[]);
         $providedChecksum = Arr::get($payload, 'signature.checksum');
         $timestamp = Arr::get($payload, 'timestamp');
-        $secret = env('WOMPI_EVENTS_SECRET');
+        $secret = config('wompi.events_secret');
 
         $concatenatedString = '';
         foreach ($signatureProperties as $property) {

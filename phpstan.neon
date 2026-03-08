@@ -1,0 +1,22 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+
+    level: 5
+
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+        # Eloquent dynamic properties on models and generic Model type
+        - '#Access to an undefined property [a-zA-Z\\]+::\$[a-zA-Z_]+#'
+        # Filament resource/form/table builder dynamic methods + property access
+        - '#Call to an undefined method#'
+        - '#Cannot access property \$value on string#'
+        # Framework scaffolding issues (VerifyEmailController)
+        - '#Parameter .+ of class Illuminate\\Auth\\Events\\Verified constructor#'
+
+    excludePaths:
+        - app/Providers/Filament/

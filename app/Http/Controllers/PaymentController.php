@@ -13,13 +13,13 @@ class PaymentController extends Controller
 
         // If the order is already paid or processing, redirect them away
         if ($order->status->value !== 'pending_payment') {
-            return redirect()->route('product.show', 'essential-3d-hoodie')
+            return redirect()->route('shop')
                 ->with('message', 'This order is already processed.');
         }
 
         $amountInCents = (int) ($order->total_amount * 100);
         $currency = 'COP';
-        $integritySecret = env('WOMPI_INTEGRITY_SECRET');
+        $integritySecret = config('wompi.integrity_secret');
 
         // Wompi Integrity Signature Formula:
         // SHA256(reference + amount_in_cents + currency + integrity_secret)
@@ -28,7 +28,7 @@ class PaymentController extends Controller
 
         return Inertia::render('Checkout/Payment', [
             'order' => $order,
-            'wompiPublicKey' => env('WOMPI_PUBLIC_KEY'),
+            'wompiPublicKey' => config('wompi.public_key'),
             'amountInCents' => $amountInCents,
             'signature' => $signature, // Pass the cryptographic hash to React
         ]);

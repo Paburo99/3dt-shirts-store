@@ -13,10 +13,17 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained(); // Nullable for guest checkout
-            $table->string('reference')->unique(); // Unique reference to send to Wompi
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('customer_name');
+            $table->string('customer_email');
+            $table->string('customer_phone');
+            $table->string('shipping_address');
+            $table->string('shipping_city');
+            $table->string('shipping_department');
+            $table->string('shipping_notes')->nullable();
+            $table->string('reference')->unique();
             $table->string('wompi_transaction_id')->nullable();
-            $table->string('status')->default('pending_payment'); // Uses Enum
+            $table->string('status')->default('pending_payment');
             $table->decimal('total_amount', 10, 2);
             $table->timestamps();
         });

@@ -10,4 +10,17 @@ export default defineConfig({
         }),
         react(),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-react': ['react', 'react-dom'],
+                    'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
+                    'vendor-postprocessing': ['@react-three/postprocessing'],
+                    'vendor-motion': ['framer-motion'],
+                    'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-slot'],
+                },
+            },
+        },
+    },
 });

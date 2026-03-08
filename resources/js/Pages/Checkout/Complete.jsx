@@ -55,7 +55,7 @@ export default function Complete({ order }) {
                 </div>
 
                 <Link 
-                    href="/product/essential-3d-hoodie"
+                    href="/"
                     className="inline-block bg-zinc-900 text-white font-bold py-3 px-8 rounded-md hover:bg-zinc-800 transition-colors"
                 >
                     Return to Store
