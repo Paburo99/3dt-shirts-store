@@ -1,5 +1,9 @@
+[variables]
+NIXPACKS_PHP_EXTENSIONS = "intl,zip,pdo_pgsql"
+
 [phases.setup]
-nixPkgs = ['php82', 'php82Extensions.pgsql', 'php82Extensions.pdo_pgsql', 'php82Extensions.intl', 'php82Extensions.zip', 'nodejs_20', 'npm-9_x']
+nixPkgs = ['nodejs_20', 'npm-9_x']
+aptPkgs = ['libicu-dev', 'libzip-dev', 'libpq-dev']
 
 [phases.install]
 cmds = [
