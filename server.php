@@ -12,7 +12,7 @@ $uri = urldecode(
 );
 
 // Serve static files directly if they exist in the public directory
-if ($uri !== '/' && file_exists($publicPath.$uri)) {
+if ($uri !== '/' && file_exists($publicPath.'/public'.$uri)) {
     return false;
 }
 
@@ -24,4 +24,4 @@ $remoteAddress = $_SERVER['REMOTE_ADDR'].':'.$_SERVER['REMOTE_PORT'];
 file_put_contents('php://stdout', "[$formattedDateTime] $remoteAddress [$requestMethod] URI: $uri\n");
 
 // Pass the request to Laravel's index.php since it's the router
-require_once $publicPath.'/index.php';
+require_once $publicPath.'/public/index.php';
