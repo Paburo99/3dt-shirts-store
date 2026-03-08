@@ -12,8 +12,8 @@ beforeEach(function () {
     $this->bottomsCat = Category::create(['name' => 'Bottoms', 'slug' => 'bottoms']);
 
     $this->hoodie = Product::create([
-        'name' => 'Test Hoodie',
-        'slug' => 'test-hoodie',
+        'name' => 'Shop Test Hoodie',
+        'slug' => 'shop-test-hoodie',
         'base_price' => 120000,
         'description' => 'A warm hoodie',
         'category_id' => $this->topsCat->id,
@@ -21,15 +21,15 @@ beforeEach(function () {
 
     Sku::create([
         'product_id' => $this->hoodie->id,
-        'code' => 'HOO-BLK-M',
+        'code' => 'SHO-BLK-M',
         'color' => '#000000',
         'size' => 'M',
         'stock' => 10,
     ]);
 
     $this->cargo = Product::create([
-        'name' => 'Cargo Pants',
-        'slug' => 'cargo-pants',
+        'name' => 'Shop Cargo Pants',
+        'slug' => 'shop-cargo-pants',
         'base_price' => 90000,
         'description' => 'Cargo pants',
         'category_id' => $this->bottomsCat->id,
@@ -62,7 +62,7 @@ it('filters products by category using id', function () {
     $response->assertInertia(fn ($page) =>
         $page->component('Shop/Index')
             ->has('products', 1)
-            ->where('products.0.name', 'Cargo Pants')
+            ->where('products.0.name', 'Shop Cargo Pants')
     );
 });
 
@@ -73,7 +73,7 @@ it('sorts products by price ascending', function () {
     $response->assertInertia(fn ($page) =>
         $page->component('Shop/Index')
             ->has('products', 2)
-            ->where('products.0.name', 'Cargo Pants')
+            ->where('products.0.name', 'Shop Cargo Pants')
     );
 });
 

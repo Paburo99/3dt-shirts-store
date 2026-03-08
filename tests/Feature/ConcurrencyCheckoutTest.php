@@ -16,6 +16,10 @@ class ConcurrencyCheckoutTest extends TestCase
 
     public function test_prevents_race_condition_on_last_item()
     {
+        if (config('database.default') === 'sqlite') {
+            $this->markTestSkipped('Concurrency tests require a persistent database (Postgres/MySQL) and cannot run on SQLite :memory:');
+        }
+
         // 1. Setup: Create a product and a SKU with exactly ONE item in stock
         $product = Product::create([
             'name' => 'Test Hoodie', 'slug' => 'test-hoodie', 'base_price' => 120000
