@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Services\WompiService;
+use App\Enums\OrderStatus;
+use App\Notifications\OrderConfirmed;
+use Illuminate\Support\Facades\Notification;
 
 class PaymentController extends Controller
 {
@@ -34,10 +39,33 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function complete($reference)
+    public function complete(Request $request, $reference, WompiService $wompiService)
     {
         // Fetch the order to display its final status to the user
-        $order = Order::where('reference', $reference)->firstOrFail();
+        $order = Order::with('items.sku')->where('reference', $reference)->firstOrFail();
+
+        if ($order->status->value === 'pending_payment' && $request->has('id')) {
+            $transactionData = $wompiService->getTransaction($request->query('id'));
+
+            if ($transactionData && isset($transactionData['status'])) {
+                if ($transactionData['status'] === 'APPROVED') {
+                    $order->update([
+                        'status' => OrderStatus::PROCESSING,
+                        'wompi_transaction_id' => $transactionData['id'],
+                    ]);
+
+                    Notification::route('mail', $order->customer_email)
+                        ->notify(new OrderConfirmed($order));
+                } elseif (in_array($transactionData['status'], ['DECLINED', 'ERROR', 'VOIDED'])) {
+                    $order->update(['status' => OrderStatus::FAILED]);
+                    
+                    // Restore stock
+                    foreach ($order->items as $item) {
+                        $item->sku()->increment('stock', $item->quantity);
+                    }
+                }
+            }
+        }
 
         return Inertia::render('Checkout/Complete', [
             'order' => $order,
