@@ -1,0 +1,42 @@
+# Stage 1: Build frontend assets
+FROM node:20 AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve application
+FROM php:8.2-cli
+
+# Install system dependencies and PHP extensions
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libicu-dev \
+    libzip-dev \
+    libpq-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl zip pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files (excluding node_modules due to size, ideally handled by .dockerignore)
+COPY . /app
+
+# Copy built frontend assets from the node stage
+COPY --from=frontend /app/public/build /app/public/build
+
+# Install PHP dependencies
+RUN composer install --optimize-autoloader --no-dev --no-interaction
+
+# Set correct permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Start command (bind to $PORT if Railway provides it, otherwise 8000)
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
