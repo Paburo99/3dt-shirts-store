@@ -1,59 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 3D Shirts Store
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A modern e-commerce platform built for customizing and purchasing 3D shirts. This project allows users to view and interact with products in 3D space, manage their wishlists, place orders, and includes a full-featured administration panel for store management.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project is built using a modern TALL/VILT stack variant, leveraging the power of Laravel for the backend and React with Inertia.js for a seamless frontend experience.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Backend:**
+- [Laravel 12](https://laravel.com/)
+- [Filament](https://filamentphp.com/) (Admin Panel)
+- [Laravel Sanctum](https://laravel.com/docs/sanctum) (Authentication)
+- [Laravel Scout](https://laravel.com/docs/scout) (Search)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Frontend:**
+- [React 18](https://reactjs.org/)
+- [Inertia.js](https://inertiajs.com/) (Routing & Data bridge)
+- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction) & [Three.js](https://threejs.org/) (3D Previews)
+- [Tailwind CSS 3](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/) (Animations)
+- [Zustand](https://github.com/pmndrs/zustand) (State Management)
 
-## Learning Laravel
+**Other Services:**
+- [Resend](https://resend.com/) (Email Delivery)
+- [Wompi](https://wompi.com/) (Payment Gateway)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Interactive 3D Previews:** Users can rotate, zoom, and inspect shirts in real-time 3D before purchasing.
+- **Product Catalog:** Browse products by categories, view details, and select specific SKUs.
+- **Shopping Cart & Checkout:** Add products to the cart, manage shipping addresses, and place orders securely.
+- **Secure Payments:** Integrated with Wompi for safe and reliable transaction processing.
+- **User Accounts:** Registration, authentication, and profile management.
+- **Wishlists:** Save favorite products for later.
+- **Admin Dashboard:** A powerful administrative interface built with Filament to manage Users, Products, Categories, SKUs, and Orders.
 
-## Laravel Sponsors
+## Project Structure
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- `app/Models`: Core domain models (`User`, `Product`, `Category`, `Sku`, `Order`, `OrderItem`, `Address`, `Wishlist`).
+- `app/Http/Controllers`: Handles incoming requests for the store front.
+- `resources/js`: React frontend application.
+- `app/Filament`: Admin dashboard resources and pages.
 
-### Premium Partners
+## Requirements
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP 8.2 or higher
+- Composer
+- Node.js & NPM
+- Database (MySQL, SQLite, etc.)
 
-## Contributing
+## Installation & Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd 3d-shirts-store
+   ```
 
-## Code of Conduct
+2. **Install PHP dependencies:**
+   ```bash
+   composer install
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Install NPM dependencies:**
+   ```bash
+   npm install
+   ```
 
-## Security Vulnerabilities
+4. **Environment Setup:**
+   Copy the example `.env` file and configure your database and API keys.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Run Migrations & Seeders:**
+   Prepare your database schema and optional mock data.
+   ```bash
+   php artisan migrate --seed
+   ```
+
+6. **Start the Development Servers:**
+   This project uses a concurrent setup to run both Laravel's server and Vite's dev server.
+   ```bash
+   composer run dev
+   ```
+   *Alternatively, you can run them separately:*
+   ```bash
+   php artisan serve
+   npm run dev
+   ```
+
+## Admin Access
+
+To access the administrative dashboard, visit `/admin` in your browser. 
+You will need to create a user with administrative privileges or run a seeder that provides a default admin account.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [Apache License 2.0](https://opensource.org/licenses/Apache-2.0).
